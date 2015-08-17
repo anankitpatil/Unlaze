@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:materialdesign="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swipe_container"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="6sp"
+                    android:weightSum="6">
+
+                    <TextView
+                        android:text="Unlaze with:"
+                        android:textSize="21sp"
+                        android:paddingLeft="12sp"
+                        android:paddingTop="18sp"
+                        android:paddingBottom="18sp"
+                        android:layout_weight="3"
+                        android:layout_width="0sp"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:text="Men"
+                        android:textSize="18sp"
+                        android:paddingTop="18sp"
+                        android:paddingBottom="18sp"
+                        android:layout_weight="2"
+                        android:layout_width="0sp"
+                        android:layout_height="wrap_content" />
+
+                    <LinearLayout
+                        android:layout_width="0sp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_gravity="right"
+                        android:layout_marginTop="9sp">
+
+                        <com.gc.materialdesign.views.CheckBox
+                            android:id="@+id/men_switch"
+                            android:background="@color/u_blue"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            materialdesign:check="true" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="6">
+
+                    <TextView
+                        android:text=""
+                        android:layout_weight="3"
+                        android:layout_width="0sp"
+                        android:layout_height="24sp" />
+
+                    <TextView
+                        android:text="Women"
+                        android:textSize="18sp"
+                        android:paddingTop="18sp"
+                        android:paddingBottom="18sp"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0sp"
+                        android:layout_weight="2"/>
+
+                    <LinearLayout
+                        android:layout_width="0sp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_gravity="right"
+                        android:layout_marginTop="9sp">
+
+                        <com.gc.materialdesign.views.CheckBox
+                            android:id="@+id/women_switch"
+                            android:background="@color/u_blue"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            materialdesign:check="true" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="6">
+
+                    <TextView
+                        android:text="Radius of:"
+                        android:textSize="21sp"
+                        android:padding="18sp"
+                        android:layout_weight="3"
+                        android:layout_width="0sp"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/sliderValue"
+                        android:text="0"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0sp"
+                        android:layout_weight="3"
+                        android:textSize="18sp" />
+
+                </LinearLayout>
+
+                <com.gc.materialdesign.views.Slider
+                    android:id="@+id/slider"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/u_blue"
+                    android:layout_marginTop="6sp"
+                    android:paddingBottom="48sp"
+                    materialdesign:max="1200"
+                    materialdesign:min="1" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_below="@id/slider"
+                    android:background="@color/u_tblack" />
+
+                <TableLayout
+                    android:id="@+id/person_search_results"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content">
+
+                </TableLayout>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+</FrameLayout>

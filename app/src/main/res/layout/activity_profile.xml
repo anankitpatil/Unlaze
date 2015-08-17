@@ -1,0 +1,145 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/u_toolbar"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_width="match_parent"
+        android:background="@color/u_blue"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <ScrollView
+        android:layout_below="@id/u_toolbar"
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <LinearLayout
+                android:id="@+id/profilePagerBox"
+                android:layout_width="fill_parent"
+                android:orientation="vertical"
+                android:layout_height="wrap_content" >
+
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/profile_pager"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2sp"
+                android:layout_below="@id/profilePagerBox"
+                android:background="@color/u_tblack" />
+
+            <com.viewpagerindicator.CirclePageIndicator xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/profilePagerIndicator"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:layout_below="@+id/profilePagerBox"
+                android:layout_marginTop="-48sp"
+                app:radius="5sp"
+                app:fillColor="@color/u_lgrey"
+                app:pageColor="@color/u_grey"
+                app:strokeWidth="0sp" />
+
+            <TextView
+                android:id="@+id/userNameAge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="24sp"
+                android:gravity="center"
+                android:layout_marginTop="36sp"
+                android:layout_below="@+id/profilePagerBox"
+                android:maxLines="1" />
+
+            <TextView android:id="@+id/userCity"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:gravity="center"
+                android:text="Location: "
+                android:layout_marginBottom="36sp"
+                android:layout_below="@+id/userNameAge"
+                android:singleLine="true"
+                android:focusable="true"
+                android:clickable="false" />
+
+            <TextView android:id="@+id/titleAbout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginBottom="24sp"
+                android:layout_below="@+id/userCity"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:text="ABOUT ME"
+                android:singleLine="true" />
+
+            <EditText android:id="@+id/userAbout"
+                android:layout_width="fill_parent"
+                android:layout_below="@+id/titleAbout"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="72sp"
+                android:inputType="textMultiLine"
+                android:windowSoftInputMode="adjustPan"
+                android:isScrollContainer="false"
+                android:textSize="21sp" />
+
+            <TextView android:id="@+id/titleActivities"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginBottom="24sp"
+                android:layout_below="@+id/userAbout"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:text="SELECT AN ACTIVITY"
+                android:singleLine="true" />
+
+            <GridLayout android:id="@+id/activitiesBox"
+                android:layout_width="fill_parent"
+                android:layout_below="@+id/titleActivities"
+                android:layout_marginBottom="36sp"
+                android:columnCount="3"
+                android:rowCount="4"
+                android:layout_height="wrap_content" >
+
+            </GridLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2sp"
+                android:layout_marginTop="-2sp"
+                android:layout_below="@id/activitiesBox"
+                android:background="@color/u_tblack" />
+
+            <Button
+                android:id="@+id/button_profile_save"
+                android:layout_width="fill_parent"
+                android:layout_height="54sp"
+                android:gravity="center"
+                android:background="@drawable/button_blue"
+                android:textColor="@color/u_white"
+                android:layout_below="@+id/activitiesBox"
+                android:text="Save" />
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2sp"
+        android:layout_below="@id/u_toolbar"
+        android:background="@color/u_tblack" />
+
+</RelativeLayout>

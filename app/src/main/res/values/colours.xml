@@ -1,0 +1,25 @@
+<resources>
+
+    <item name="u_blue" type="color">#FF164784</item>
+    <item name="u_lblue" type="color">#FF30619e</item>
+    <item name="u_dblue" type="color">#FF082f60</item>
+    <item name="u_white" type="color">#FFf3f3f3</item>
+    <item name="u_black" type="color">#FF0a0a0a</item>
+    <item name="u_tblack" type="color">#330a0a0a</item>
+    <item name="u_ltblack" type="color">#110a0a0a</item>
+    <item name="u_grey" type="color">#FF9e9e9e</item>
+    <item name="u_lgrey" type="color">#FFeaeaea</item>
+
+    <integer-array name="androidcolors">
+        <item>@color/u_blue</item>
+        <item>@color/u_lblue</item>
+        <item>@color/u_dblue</item>
+        <item>@color/u_white</item>
+        <item>@color/u_black</item>
+        <item>@color/u_tblack</item>
+        <item>@color/u_ltblack</item>
+        <item>@color/u_grey</item>
+        <item>@color/u_lgrey</item>
+    </integer-array>
+
+</resources>

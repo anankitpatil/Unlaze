@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Unlaze</string>
+
+    <string name="title_activity_main">Unlaze</string>
+    <string name="title_activity_intro">Unlaze Facebook Login</string>
+    <string name="title_activity_profile">Profile</string>
+
+    <string name="app_id">486257738187973</string>
+
+    <string name="title_activity_check">Search</string>
+
+    <string name="drawer_item_profile">View/Edit Profile</string>
+    <string name="drawer_item_search">Search</string>
+    <string name="drawer_item_conversations">Conversations</string>
+    <string name="drawer_item_notifications">Notifications</string>
+    <string name="drawer_item_invite">Invite Friends</string>
+    <string name="drawer_item_feedback">Feedback</string>
+    <string name="drawer_item_logout">Logout from Facebook</string>
+    <string name="drawer_item_delete">Delete Account</string>
+</resources>
