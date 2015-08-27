@@ -1,7 +1,6 @@
 package com.unlazeapp.unlaze;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -26,6 +25,7 @@ import com.unlazeapp.R;
 import com.unlazeapp.utils.ApiService;
 import com.unlazeapp.utils.ApiServiceListener;
 import com.unlazeapp.utils.GlobalVars;
+import com.unlazeapp.utils.PreferencesVars;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,17 +36,17 @@ public class MainActivity extends AppCompatActivity {
     private static String name;
     private static String email;
 
-    private SharedPreferences shared;
-    static final String PREF = "unlazePreferences";
-
     private Drawer result;
     private Toolbar toolbar;
 
     ImageLoader imageLoader = ImageLoader.getInstance();
 
+    private  static MainActivity instance = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        instance = this;
         setContentView(R.layout.activity_main);
         try {
 
@@ -123,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
                                     .withNameShown(true)
                                     .withEmail(email)
                                     .withTextColorRes(R.color.u_white)
+                                    .withSelectable(false)
                                     .withIdentifier(1), 0
                     );
                     result.setOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
@@ -163,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
                                 getSupportActionBar().setTitle(((Nameable) iDrawerItem).getNameRes());
 
                                 // logout
-                            } else if (iDrawerItem.getIdentifier() == 7) {
+                            } else if (iDrawerItem.getIdentifier() == 8) {
                                 getSupportActionBar().setTitle(((Nameable) iDrawerItem).getNameRes());
 
                                 // delete
@@ -202,6 +203,19 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        // notification checks
+        if (GlobalVars.getInstance().U_NOTIF_STATE == 1) {
+
+            // person already loaded -- show request activity
+            Intent i = new Intent(this, RequestActivity.class);
+            startActivityForResult(i, 0);
+        }
+    }
+
+    protected void notificationRequest() {
+        Intent i = new Intent(MainActivity.this, RequestActivity.class);
+        startActivityForResult(i, 0);
     }
 
     @Override
@@ -224,15 +238,20 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
 
-        // save off state
-        shared = getSharedPreferences(PREF, 0);
-        shared.edit().putBoolean("active", false).commit();
+    @Override
+    public void onStop() {
+        super.onStop();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+    }
+
+    public static MainActivity getInstance() {
+        return instance;
     }
 
 }

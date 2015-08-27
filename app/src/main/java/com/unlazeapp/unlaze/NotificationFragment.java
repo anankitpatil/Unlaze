@@ -87,7 +87,7 @@ public class NotificationFragment extends Fragment implements SwipeRefreshLayout
                     GlobalVars.getInstance().userRequest = result;
 
                     if (GlobalVars.getInstance().userRequest.length() > 0) {
-                        for (int k = 0; k < GlobalVars.getInstance().userRequest.length(); k++) {
+                        for (int k = GlobalVars.getInstance().userRequest.length(); k > 0; k--) {
                             try {
                                 if (GlobalVars.getInstance().userRequest.getJSONObject(k).getBoolean("valid")) {
                                     ApiService call = ApiService.getInstance();

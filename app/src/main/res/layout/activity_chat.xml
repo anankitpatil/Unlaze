@@ -1,0 +1,49 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/u_toolbar"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:minHeight="?attr/actionBarSize"
+        android:background="@color/u_blue"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <ScrollView
+        android:layout_below="@id/u_toolbar"
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="60sp">
+
+        <TableLayout
+            android:id="@+id/u_chat"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+        </TableLayout>
+
+    </ScrollView>
+
+    <EditText
+        android:layout_weight="1"
+        android:id="@+id/write"
+        android:layout_height="54sp"
+        android:layout_marginLeft="3sp"
+        android:layout_marginRight="90sp"
+        android:layout_marginBottom="3sp"
+        android:layout_marginStart="3sp"
+        android:layout_width="match_parent">
+
+        <requestFocus></requestFocus>
+    </EditText>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2sp"
+        android:layout_below="@id/u_toolbar"
+        android:background="@color/u_tblack" />
+
+</RelativeLayout>

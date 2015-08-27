@@ -91,17 +91,17 @@ public class ConnectionFragment extends Fragment implements SwipeRefreshLayout.O
                                         public void onSuccess(final JSONObject result) {
 
                                             // Create search results view
-                                            LayoutInflater inflater = getActivity().getLayoutInflater();
-                                            TableRow row = (TableRow) inflater.inflate(R.layout.item_search, null, true);
-                                            ImageView face = (ImageView) row.findViewById(R.id.icon);
-                                            TextView firstLine = (TextView) row.findViewById(R.id.firstLine);
-                                            TextView secondLine = (TextView) row.findViewById(R.id.secondLine);
+                                            final LayoutInflater inflater = getActivity().getLayoutInflater();
+                                            final TableRow row = (TableRow) inflater.inflate(R.layout.item_search, null, true);
+                                            final ImageView face = (ImageView) row.findViewById(R.id.icon);
+                                            final TextView firstLine = (TextView) row.findViewById(R.id.firstLine);
+                                            final TextView secondLine = (TextView) row.findViewById(R.id.secondLine);
                                             final ImageView icon = (ImageView) row.findViewById(R.id.activity_icon);
                                             try {
 
                                                 // Calculate age
-                                                SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-                                                String dateInString = result.getString("birth");
+                                                final SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+                                                final String dateInString = result.getString("birth");
                                                 Calendar dob = Calendar.getInstance();
                                                 try {
                                                     dob.setTime(formatter.parse(dateInString));
@@ -181,7 +181,7 @@ public class ConnectionFragment extends Fragment implements SwipeRefreshLayout.O
                                                     GlobalVars.getInstance().personDetail = result;
 
                                                     // Start personView
-                                                    Intent i = new Intent(getActivity(), PersonActivity.class);
+                                                    Intent i = new Intent(getActivity(), ChatActivity.class);
                                                     startActivityForResult(i, 0);
                                                 }
                                             });

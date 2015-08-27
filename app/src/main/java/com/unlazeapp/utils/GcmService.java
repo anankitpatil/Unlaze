@@ -18,7 +18,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.unlazeapp.R;
-import com.unlazeapp.unlaze.PersonActivity;
 import com.unlazeapp.unlaze.SplashActivity;
 
 public class GcmService extends IntentService {
@@ -47,9 +46,9 @@ public class GcmService extends IntentService {
         if (!extras.isEmpty()) {
             if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
                 Log.i(TAG, "GCM // Send error");
-                sendNotification(null, "Message send error");
+                sendNotification(null, "Message send error", null);
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(messageType)) {
-                sendNotification(null, "Message Deleted");
+                sendNotification(null, "Message Deleted", null);
                 Log.i(TAG, "GCM // Deleted message");
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
 
@@ -61,7 +60,7 @@ public class GcmService extends IntentService {
                         .build();
                 final Bitmap bmp = imageLoader.loadImageSync("https://graph.facebook.com/" + extras.getString("user") + "/picture?width=150&height=150", options);
                 content = "You have an new request from " + extras.getString("name") + " to join in for some " + extras.getString("activity") + ".";
-                sendNotification(bmp, content);
+                sendNotification(bmp, content, extras.getString("user"));
                 Log.i(TAG, "GCM Sent to notification //" + extras.toString());
             }
         }
@@ -69,26 +68,23 @@ public class GcmService extends IntentService {
         GcmReceiver.completeWakefulIntent(intent);
     }
 
-    private void sendNotification(Bitmap bmp, String msg) {
+    private void sendNotification(Bitmap bmp, String msg, String id) {
         mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-        shared = getSharedPreferences(PREF, 0);
-        Intent personIntent;
-        PendingIntent contentIntent;
-        if (shared.getBoolean("active", false)) {
-            personIntent = new Intent(this, PersonActivity.class);
-            contentIntent = PendingIntent.getActivity(this, 0, personIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        } else {
-            personIntent = new Intent(this, SplashActivity.class);
-            personIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            contentIntent = PendingIntent.getActivity(this, 0, personIntent, 0);
-        }
-
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.unlaze_notification)
                 .setLargeIcon(bmp)
                 .setContentTitle("New unlaze request!")
-                .setStyle(new NotificationCompat.BigTextStyle().bigText(msg));
-        mBuilder.setContentIntent(contentIntent);
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(msg))
+                .setAutoCancel(true);
+
+        final Intent intent = new Intent(getApplicationContext(), SplashActivity.class);
+        intent.putExtra("mode", "request");
+        intent.putExtra("person", id);
+
+        // start new application
+        PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        mBuilder.setContentIntent(pi);
+
         mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
     }
 

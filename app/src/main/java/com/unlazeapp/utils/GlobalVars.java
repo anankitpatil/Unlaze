@@ -9,8 +9,6 @@ public class GlobalVars {
 
     private static GlobalVars mInstance = null;
 
-    public JSONObject currentUser;
-    public JSONObject currentPerson;
     public JSONObject userDetail;
     public JSONArray userActivity;
     public JSONArray userConnect;
@@ -26,6 +24,7 @@ public class GlobalVars {
     public Double latitude, longitude;
     public String city;
     public String gcm;
+    public int U_NOTIF_STATE = 0;
 
     protected GlobalVars() {
 

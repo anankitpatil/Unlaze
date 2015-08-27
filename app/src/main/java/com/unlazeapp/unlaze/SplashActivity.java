@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -57,6 +58,26 @@ public class SplashActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
+        // notification open
+        if (getIntent().getExtras() != null && getIntent().getExtras().containsKey("mode")) {
+            if (getIntent().getExtras().getString("mode").equals("request")) {
+
+                // get person from notification
+                ApiService call = ApiService.getInstance();
+                call.getDetail(getIntent().getExtras().getString("person"), new ApiServiceListener() {
+                    @Override
+                    public void onSuccess(JSONObject result) {
+                        GlobalVars.getInstance().personDetail = result;
+                        GlobalVars.getInstance().U_NOTIF_STATE = 1;
+                        if (MainActivity.getInstance() != null) {
+                            MainActivity.getInstance().notificationRequest();
+                            finish();
+                        }
+                    }
+                });
+            }
+        }
 
         // check if GPS enabled sync location
         GpsTracker gpsTracker = new GpsTracker(this);
@@ -113,7 +134,7 @@ public class SplashActivity extends Activity {
                             // user exists -- make detail global
                             GlobalVars.getInstance().userDetail = result;
 
-                            // access token valid & user loaded -- login
+                            // normal start
                             Intent i = new Intent(SplashActivity.this, MainActivity.class);
                             startActivity(i);
                             finish();
@@ -141,10 +162,6 @@ public class SplashActivity extends Activity {
 
         // init universal image loader
         if(!imageLoader.isInited()) ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(getApplicationContext()));
-
-        // save app on state
-        shared = getSharedPreferences(PREF, 0);
-        shared.edit().putBoolean("active", true).commit();
     }
 
     @Override
@@ -157,9 +174,6 @@ public class SplashActivity extends Activity {
     public void onDestroy() {
         super.onDestroy();
         accessTokenTracker.stopTracking();
-
-        // save application off state
-        shared.edit().putBoolean("active", false).commit();
     }
 
     private void registerInBackground() {
