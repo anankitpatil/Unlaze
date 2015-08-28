@@ -168,6 +168,8 @@ public class MainActivity extends AppCompatActivity {
                                 getSupportActionBar().setTitle(((Nameable) iDrawerItem).getNameRes());
 
                                 // delete
+                                Fragment f = DeleteFragment.newInstance(getResources().getString(((Nameable) iDrawerItem).getNameRes()));
+                                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, f).commit();
                             }
                             return false;
                         }

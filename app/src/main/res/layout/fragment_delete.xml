@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:materialdesign="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/agreement"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:textSize="21sp"
+        android:padding="12sp"
+        android:text="Deleting your account will delete all your notifications, messages and profile information. All your data will be deleted from our servers. Please be careful, as this cannot be undone."/>
+
+    <com.gc.materialdesign.views.CheckBox
+        android:id="@+id/checkbox"
+        android:background="@color/u_blue"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="12sp"
+        android:layout_marginTop="24sp"
+        android:layout_below="@id/agreement"
+        materialdesign:check="false" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="I agree"
+        android:textSize="21sp"
+        android:layout_marginTop="32sp"
+        android:textStyle="bold"
+        android:layout_marginRight="12sp"
+        android:layout_toLeftOf="@id/checkbox"
+        android:layout_below="@id/agreement"/>
+
+    <Button
+        android:id="@+id/button_delete"
+        android:layout_width="fill_parent"
+        android:layout_height="54sp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/u_lgrey"
+        android:textColor="@color/u_white"
+        android:text="Delete" />
+
+</RelativeLayout>

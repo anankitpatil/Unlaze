@@ -164,14 +164,14 @@ public class ProfileActivity extends AppCompatActivity {
                         activityButton[i].setBackgroundResource(GlobalVars.getInstance().activityIcons[i]);
                         final LinearLayout ll = new LinearLayout(ProfileActivity.this);
                         ll.addView(activityButton[i]);
-                        final TextView tv = new TextView(ProfileActivity.this);
-                        tv.setText(GlobalVars.getInstance().activityList[i]);
-                        tv.setGravity(Gravity.CENTER);
-                        ll.addView(tv);
+                        // final TextView tv = new TextView(ProfileActivity.this);
+                        // tv.setText(GlobalVars.getInstance().activityList[i]);
+                        // tv.setGravity(Gravity.CENTER);
+                        // ll.addView(tv);
                         gl.addView(ll);
                         activityButton[i].getLayoutParams().height = size.x / 3;
                         activityButton[i].getLayoutParams().width = size.x / 3;
-                        tv.getLayoutParams().width = size.x / 3;
+                        // tv.getLayoutParams().width = size.x / 3;
                         try {
 
                             // First start

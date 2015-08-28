@@ -115,6 +115,14 @@
                 android:value=".unlaze.MainActivity"/>
         </activity>
 
+        <activity
+            android:name=".unlaze.ChatActivity"
+            android:screenOrientation="portrait" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".unlaze.MainActivity"/>
+        </activity>
+
     </application>
 
 </manifest>

@@ -31,11 +31,14 @@
         android:layout_weight="1"
         android:id="@+id/write"
         android:layout_height="54sp"
+        android:layout_alignParentBottom="true"
+        android:textSize="21sp"
+        android:singleLine="false"
         android:layout_marginLeft="3sp"
         android:layout_marginRight="90sp"
         android:layout_marginBottom="3sp"
         android:layout_marginStart="3sp"
-        android:layout_width="match_parent">
+        android:layout_width="match_parent" >
 
         <requestFocus></requestFocus>
     </EditText>

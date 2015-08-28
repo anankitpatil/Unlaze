@@ -3,6 +3,7 @@ package com.unlazeapp.utils;
 import android.util.Log;
 
 import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -91,7 +92,7 @@ public class ApiService {
             }
 
             public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject errorResponse) {
-                if(errorResponse != null) {
+                if (errorResponse != null) {
                     listener.onSuccess(errorResponse);
                     Log.d("GET detail FAILED:", errorResponse.toString());
                 }
@@ -288,6 +289,21 @@ public class ApiService {
             public void onFailure(int statusCode, Header[] headers, Throwable e, JSONArray errorResponse) {
                 listener.onSuccess(errorResponse);
                 Log.d("PUT notif FAILED:", errorResponse.toString());
+            }
+        });
+    }
+
+    public void deleteUser(String id, final ApiServiceListener listener) {
+        client.delete(null, getAbsoluteUrl("users/") + id, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                listener.onSuccess(null);
+                Log.v("DELETE SUCCESS:", responseBody.toString());
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                Log.d("DELETE FAILED:", responseBody.toString());
             }
         });
     }
