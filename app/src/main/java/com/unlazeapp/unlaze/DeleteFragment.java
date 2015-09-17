@@ -62,6 +62,11 @@ public class DeleteFragment extends Fragment {
                                         // user deleted -- finish activity
                                         getActivity().finish();
                                     }
+
+                                    @Override
+                                    public void onFailure() {
+
+                                    }
                                 });
                             } catch (JSONException e) {
                                 e.printStackTrace();

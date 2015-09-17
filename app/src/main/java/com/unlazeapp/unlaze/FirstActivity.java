@@ -58,8 +58,6 @@ public class FirstActivity extends AppCompatActivity {
 
     AccessTokenTracker accessTokenTracker;
 
-    static final String TAG = "UNLAZE //";
-
     ImageLoader imageLoader = ImageLoader.getInstance();
 
     @Override
@@ -169,10 +167,6 @@ public class FirstActivity extends AppCompatActivity {
                     for (int i = 0; i < GlobalVars.getInstance().activityIcons.length; i++) {
                         activityButton[i] = new ImageButton(FirstActivity.this);
                         activityButton[i].setBackgroundResource(GlobalVars.getInstance().activityIcons[i]);
-                        //final GridLayout.LayoutParams param = new GridLayout.LayoutParams();
-                        //param.columnSpec = GridLayout.spec(2);
-                        //param.rowSpec = GridLayout.spec(2);
-                        //activityButton[i].setLayoutParams(param);
                         gl.addView(activityButton[i]);
                         activityButton[i].getLayoutParams().height = size.x / 3;
                         activityButton[i].getLayoutParams().width = size.x / 3;
@@ -267,6 +261,11 @@ public class FirstActivity extends AppCompatActivity {
                         });
                     }
                 }
+
+                @Override
+                public void onFailure() {
+
+                }
             });
         } catch (JSONException e) {
             e.printStackTrace();
@@ -289,11 +288,21 @@ public class FirstActivity extends AppCompatActivity {
                         public void onSuccess(JSONObject result) {
                             GlobalVars.getInstance().userDetail = result;
                         }
+
+                        @Override
+                        public void onFailure() {
+
+                        }
                     });
                     call.updateActivity(GlobalVars.getInstance().userDetail.getString("id"), GlobalVars.getInstance().userActivity, new ApiServiceListenerP() {
                         @Override
                         public void onSuccess(JSONArray result) {
                             GlobalVars.getInstance().userActivity = result;
+                        }
+
+                        @Override
+                        public void onFailure() {
+
                         }
                     });
 
@@ -361,7 +370,7 @@ public class FirstActivity extends AppCompatActivity {
 
         @Override
         public boolean isViewFromObject(View view, Object object) {
-            return view == ((ImageView) object);
+            return view == object;
         }
 
         @Override

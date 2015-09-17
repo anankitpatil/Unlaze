@@ -9,7 +9,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Display;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -61,15 +60,11 @@ public class ProfileActivity extends AppCompatActivity {
 
     AccessTokenTracker accessTokenTracker;
 
-    static final String TAG = "UNLAZE //";
-
     ImageLoader imageLoader = ImageLoader.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // SETCONTENT
         setContentView(R.layout.activity_profile);
 
         // toolbar
@@ -164,14 +159,9 @@ public class ProfileActivity extends AppCompatActivity {
                         activityButton[i].setBackgroundResource(GlobalVars.getInstance().activityIcons[i]);
                         final LinearLayout ll = new LinearLayout(ProfileActivity.this);
                         ll.addView(activityButton[i]);
-                        // final TextView tv = new TextView(ProfileActivity.this);
-                        // tv.setText(GlobalVars.getInstance().activityList[i]);
-                        // tv.setGravity(Gravity.CENTER);
-                        // ll.addView(tv);
                         gl.addView(ll);
                         activityButton[i].getLayoutParams().height = size.x / 3;
                         activityButton[i].getLayoutParams().width = size.x / 3;
-                        // tv.getLayoutParams().width = size.x / 3;
                         try {
 
                             // First start
@@ -271,6 +261,11 @@ public class ProfileActivity extends AppCompatActivity {
                         });
                     }
                 }
+
+                @Override
+                public void onFailure() {
+
+                }
             });
         } catch (JSONException e) {
             e.printStackTrace();
@@ -293,11 +288,21 @@ public class ProfileActivity extends AppCompatActivity {
                         public void onSuccess(JSONObject result) {
                             GlobalVars.getInstance().userDetail = result;
                         }
+
+                        @Override
+                        public void onFailure() {
+
+                        }
                     });
                     call.updateActivity(GlobalVars.getInstance().userDetail.getString("id"), GlobalVars.getInstance().userActivity, new ApiServiceListenerP() {
                         @Override
                         public void onSuccess(JSONArray result) {
                             GlobalVars.getInstance().userActivity = result;
+                        }
+
+                        @Override
+                        public void onFailure() {
+
                         }
                     });
 
@@ -378,7 +383,7 @@ public class ProfileActivity extends AppCompatActivity {
                     options = new DisplayImageOptions.Builder()
                             .displayer(new FadeInBitmapDisplayer(600))
                             .cacheInMemory(true)
-                            .cacheOnDisc(true)
+                            .cacheOnDisk(true)
                             .build();
                     imageLoader.displayImage(GlobalVars.getInstance().userDetail.getJSONArray("face").getJSONObject(position).getString("source"), pagerViews[position], options);
                 } catch (JSONException e) {

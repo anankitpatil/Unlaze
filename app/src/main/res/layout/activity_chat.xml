@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -13,7 +14,7 @@
 
     <ScrollView
         android:layout_below="@id/u_toolbar"
-        android:id="@+id/fragment_container"
+        android:id="@+id/chat_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="60sp">
@@ -30,18 +31,32 @@
     <EditText
         android:layout_weight="1"
         android:id="@+id/write"
-        android:layout_height="54sp"
+        android:layout_height="wrap_content"
+        android:minHeight="54sp"
         android:layout_alignParentBottom="true"
+        android:inputType="textMultiLine"
+        android:isScrollContainer="true"
         android:textSize="21sp"
         android:singleLine="false"
         android:layout_marginLeft="3sp"
-        android:layout_marginRight="90sp"
+        android:layout_marginRight="66sp"
         android:layout_marginBottom="3sp"
         android:layout_marginStart="3sp"
-        android:layout_width="match_parent" >
+        android:layout_width="match_parent" />
 
-        <requestFocus></requestFocus>
-    </EditText>
+    <com.mikepenz.iconics.view.IconicsButton
+        android:layout_width="54sp"
+        android:layout_height="54sp"
+        android:id="@+id/enter"
+        android:text="{faw-send}"
+        android:textSize="30sp"
+        android:paddingTop="3sp"
+        android:textColor="@drawable/button_text_blue"
+        android:background="@null"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="6sp"
+        android:layout_marginBottom="6sp"/>
 
     <View
         android:layout_width="match_parent"

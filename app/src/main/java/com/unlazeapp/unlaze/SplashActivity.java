@@ -2,6 +2,7 @@ package com.unlazeapp.unlaze;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -9,8 +10,9 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -49,9 +51,6 @@ public class SplashActivity extends Activity {
 
     private static final int SPLASH_TIME_OUT = 3000;
 
-    private SharedPreferences shared;
-    static final String PREF = "unlazePreferences";
-
     ImageLoader imageLoader = ImageLoader.getInstance();
 
     @Override
@@ -75,6 +74,31 @@ public class SplashActivity extends Activity {
                             finish();
                         }
                     }
+
+                    @Override
+                    public void onFailure() {
+
+                    }
+                });
+            } else if (getIntent().getExtras().getString("mode").equals("chat")) {
+
+                // get person from notification
+                ApiService call = ApiService.getInstance();
+                call.getDetail(getIntent().getExtras().getString("person"), new ApiServiceListener() {
+                    @Override
+                    public void onSuccess(JSONObject result) {
+                        GlobalVars.getInstance().personDetail = result;
+                        GlobalVars.getInstance().U_NOTIF_STATE = 2;
+                        if (MainActivity.getInstance() != null) {
+                            MainActivity.getInstance().notificationChat();
+                            finish();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure() {
+
+                    }
                 });
             }
         }
@@ -89,6 +113,26 @@ public class SplashActivity extends Activity {
             GlobalVars.getInstance().city = gpsTracker.getCity();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+
+        // alert for gps
+        if (!gpsTracker.isGPSEnabled || !gpsTracker.isGPSEnabled) {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(getApplicationContext());
+            dialog.setMessage("UNLAZE requires your location to find an activity for you. Enable location services from settings.");
+            dialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    getApplicationContext().startActivity(myIntent);
+                }
+            });
+            dialog.setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    finish();
+                }
+            });
+            dialog.show();
         }
 
         // check for GCM or register
@@ -139,6 +183,25 @@ public class SplashActivity extends Activity {
                             startActivity(i);
                             finish();
                         }
+                    }
+                    @Override
+                    public void onFailure() {
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(getApplicationContext());
+                        dialog.setMessage("UNLAZE requires internet to find an people to share an activity with you. Enable internet from settings.");
+                        dialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                                Intent myIntent = new Intent(Settings.ACTION_WIFI_SETTINGS);
+                                getApplicationContext().startActivity(myIntent);
+                            }
+                        });
+                        dialog.setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                                finish();
+                            }
+                        });
+                        dialog.show();
                     }
                 });
             }
@@ -198,7 +261,6 @@ public class SplashActivity extends Activity {
                 }
                 return msg;
             }
-
             @Override
             protected void onPostExecute(String msg) {
 

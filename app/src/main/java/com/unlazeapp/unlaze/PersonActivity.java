@@ -14,14 +14,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.unlazeapp.R;
 import com.unlazeapp.utils.ApiService;
-import com.unlazeapp.utils.ApiServiceListener;
 import com.unlazeapp.utils.ApiServiceListenerP;
 import com.unlazeapp.utils.GlobalVars;
 import com.viewpagerindicator.CirclePageIndicator;
@@ -30,7 +28,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -51,8 +48,6 @@ public class PersonActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // SETCONTENT
         setContentView(R.layout.activity_person);
 
         // init toolbar
@@ -166,10 +161,20 @@ public class PersonActivity extends AppCompatActivity {
                                         // go back
                                         onBackPressed();
                                     }
+
+                                    @Override
+                                    public void onFailure() {
+
+                                    }
                                 });
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
+                        }
+
+                        @Override
+                        public void onFailure() {
+
                         }
                     });
                 } catch (JSONException e) {
@@ -215,7 +220,7 @@ public class PersonActivity extends AppCompatActivity {
                     options = new DisplayImageOptions.Builder()
                             .displayer(new FadeInBitmapDisplayer(600))
                             .cacheInMemory(true)
-                            .cacheOnDisc(true)
+                            .cacheOnDisk(true)
                             .build();
                     imageLoader.displayImage(GlobalVars.getInstance().personDetail.getJSONArray("face").getJSONObject(position).getString("source"), pagerViews[position], options);
                 } catch (JSONException e) {

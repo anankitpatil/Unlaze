@@ -158,6 +158,11 @@ public class ConnectionFragment extends Fragment implements SwipeRefreshLayout.O
                                                             }
                                                         }
                                                     }
+
+                                                    @Override
+                                                    public void onFailure() {
+
+                                                    }
                                                 });
 
                                                 // profile pic
@@ -165,7 +170,7 @@ public class ConnectionFragment extends Fragment implements SwipeRefreshLayout.O
                                                 options = new DisplayImageOptions.Builder()
                                                         .displayer(new FadeInBitmapDisplayer(600))
                                                         .cacheInMemory(true)
-                                                        .cacheOnDisc(true)
+                                                        .cacheOnDisk(true)
                                                         .build();
                                                 imageLoader.displayImage("https://graph.facebook.com/" + result.getString("id") + "/picture?type=normal", face, options);
                                             } catch (JSONException e) {
@@ -198,6 +203,11 @@ public class ConnectionFragment extends Fragment implements SwipeRefreshLayout.O
                                             });
                                             tl.addView(row);
                                         }
+
+                                        @Override
+                                        public void onFailure() {
+
+                                        }
                                     });
                                 }
                             } catch (JSONException e) {
@@ -209,6 +219,11 @@ public class ConnectionFragment extends Fragment implements SwipeRefreshLayout.O
                         // show no notifications message
                     }
                     swipeLayout.setRefreshing(false);
+                }
+
+                @Override
+                public void onFailure() {
+
                 }
             });
         } catch (JSONException e) {

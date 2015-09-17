@@ -24,6 +24,7 @@ public class ApiService {
 
     private ApiService() {
         client = new AsyncHttpClient();
+        client.setMaxRetriesAndTimeout(10, 5000);
     }
 
     public static ApiService getInstance() {
@@ -31,6 +32,20 @@ public class ApiService {
             instance = new ApiService();
         }
         return instance;
+    }
+
+    public void geoCall(String place, final ApiServiceListener listener) {
+        client.removeAllHeaders();
+        client.get("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + place + "&ka&sensor=false", new JsonHttpResponseHandler() {
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                listener.onSuccess(response);
+                Log.d("GEO SUCCESS:", response.toString());
+            }
+            public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject errorResponse) {
+                listener.onFailure();
+                // Log.d("GEO FAILED:", errorResponse.toString());
+            }
+        });
     }
 
     public void createUser(String id, final ApiServiceListener listener) {
@@ -61,8 +76,8 @@ public class ApiService {
                             Log.d("POST new user SUCCESS:", response.toString());
                         }
                         public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject errorResponse) {
-                            listener.onSuccess(errorResponse);
-                            Log.d("POST new user FAILED:", errorResponse.toString());
+                            listener.onFailure();
+                            // Log.d("POST new user FAILED:", errorResponse.toString());
                         }
                     });
                 } else {
@@ -77,8 +92,8 @@ public class ApiService {
                 Log.d("GET user SUCCESS:", response.toString());
             }
             public void onFailure(int statusCode, Header[] headers, Throwable e, JSONArray errorResponse) {
-                listener.onSuccess(null);
-                Log.d("GET user FAILED:", errorResponse.toString());
+                listener.onFailure();
+                // Log.d("GET user FAILED:", errorResponse.toString());
             }
         });
     }
@@ -92,10 +107,8 @@ public class ApiService {
             }
 
             public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject errorResponse) {
-                if (errorResponse != null) {
-                    listener.onSuccess(errorResponse);
-                    Log.d("GET detail FAILED:", errorResponse.toString());
-                }
+                listener.onFailure();
+                // Log.d("GET detail FAILED:", errorResponse.toString());
             }
         });
     }
@@ -118,8 +131,8 @@ public class ApiService {
             }
 
             public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject errorResponse) {
-                listener.onSuccess(errorResponse);
-                Log.d("PUT detail FAILED:", errorResponse.toString());
+                listener.onFailure();
+                // Log.d("PUT detail FAILED:", errorResponse.toString());
             }
         });
     }
@@ -133,8 +146,8 @@ public class ApiService {
             }
 
             public void onFailure(int statusCode, Header[] headers, Throwable e, JSONArray errorResponse) {
-                listener.onSuccess(errorResponse);
-                Log.d("GET activity FAILED:", errorResponse.toString());
+                listener.onFailure();
+                // Log.d("GET activity FAILED:", errorResponse.toString());
             }
         });
     }
@@ -157,8 +170,8 @@ public class ApiService {
             }
 
             public void onFailure(int statusCode, Header[] headers, Throwable e, JSONArray errorResponse) {
-                listener.onSuccess(errorResponse);
-                Log.d("PUT activity FAILED:", errorResponse.toString());
+                listener.onFailure();
+                // Log.d("PUT activity FAILED:", errorResponse.toString());
             }
         });
     }
@@ -172,8 +185,8 @@ public class ApiService {
             }
 
             public void onFailure(int statusCode, Header[] headers, Throwable e, JSONArray errorResponse) {
-                listener.onSuccess(errorResponse);
-                Log.d("GET connect FAILED:", errorResponse.toString());
+                listener.onFailure();
+                // Log.d("GET connect FAILED:", errorResponse.toString());
             }
         });
     }
@@ -196,8 +209,8 @@ public class ApiService {
             }
 
             public void onFailure(int statusCode, Header[] headers, Throwable e, JSONArray errorResponse) {
-                listener.onSuccess(errorResponse);
-                Log.d("PUT connect FAILED:", errorResponse.toString());
+                listener.onFailure();
+                // Log.d("PUT connect FAILED:", errorResponse.toString());
             }
         });
     }
@@ -211,8 +224,8 @@ public class ApiService {
             }
 
             public void onFailure(int statusCode, Header[] headers, Throwable e, JSONArray errorResponse) {
-                listener.onSuccess(errorResponse);
-                Log.d("GET request FAILED:", errorResponse.toString());
+                listener.onFailure();
+                // Log.d("GET request FAILED:", errorResponse.toString());
             }
         });
     }
@@ -235,8 +248,8 @@ public class ApiService {
             }
 
             public void onFailure(int statusCode, Header[] headers, Throwable e, JSONArray errorResponse) {
-                listener.onSuccess(errorResponse);
-                Log.d("PUT request FAILED:", errorResponse.toString());
+                listener.onFailure();
+                // Log.d("PUT request FAILED:", errorResponse.toString());
             }
         });
     }
@@ -257,8 +270,8 @@ public class ApiService {
             }
 
             public void onFailure(int statusCode, Header[] headers, Throwable e, JSONArray errorResponse) {
-                listener.onSuccess(errorResponse);
-                Log.d("GET people FAILED:", errorResponse.toString());
+                listener.onFailure();
+                // Log.d("GET people FAILED:", errorResponse.toString());
             }
         });
     }
@@ -287,8 +300,8 @@ public class ApiService {
             }
 
             public void onFailure(int statusCode, Header[] headers, Throwable e, JSONArray errorResponse) {
-                listener.onSuccess(errorResponse);
-                Log.d("PUT notif FAILED:", errorResponse.toString());
+                listener.onFailure();
+                // Log.d("PUT notif FAILED:", errorResponse.toString());
             }
         });
     }
@@ -303,7 +316,53 @@ public class ApiService {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                Log.d("DELETE FAILED:", responseBody.toString());
+                listener.onFailure();
+                // Log.d("DELETE FAILED:", responseBody.toString());
+            }
+        });
+    }
+
+    public void getChatWith(String id, String with, final ApiServiceListenerP listener) {
+        client.removeAllHeaders();
+        client.get(getAbsoluteUrl("chat/") + id + "/" + with, new JsonHttpResponseHandler() {
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                listener.onSuccess(response);
+                Log.d("GET chat SUCCESS:", response.toString());
+            }
+
+            public void onFailure(int statusCode, Header[] headers, Throwable e, JSONArray errorResponse) {
+                listener.onFailure();
+                // Log.d("GET chat FAILED:", errorResponse.toString());
+            }
+        });
+    }
+
+    public void sendChatMessage(JSONObject content, final ApiServiceListener listener) {
+        client.addHeader("Accept", "text/json");
+        client.addHeader("content-type", "application/json");
+        StringEntity se;
+        HttpEntity entity = null;
+        String to = null;
+        String from = null;
+        try {
+            se = new StringEntity(content.toString());
+            entity = se;
+            to = GlobalVars.getInstance().personDetail.getString("id");
+            from = GlobalVars.getInstance().userDetail.getString("id");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        client.put(null, getAbsoluteUrl("chat/") + to + "/" + from, entity, "application/json", new JsonHttpResponseHandler() {
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                listener.onSuccess(response);
+                Log.d("PUT chat SUCCESS:", response.toString());
+            }
+
+            public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject errorResponse) {
+                listener.onFailure();
+                // Log.d("PUT chat FAILED:", errorResponse.toString());
             }
         });
     }

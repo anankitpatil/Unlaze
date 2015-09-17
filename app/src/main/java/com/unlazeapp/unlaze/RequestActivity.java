@@ -7,7 +7,6 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +21,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.unlazeapp.R;
 import com.unlazeapp.utils.ApiService;
-import com.unlazeapp.utils.ApiServiceListener;
 import com.unlazeapp.utils.ApiServiceListenerP;
 import com.unlazeapp.utils.GlobalVars;
 import com.viewpagerindicator.CirclePageIndicator;
@@ -31,7 +29,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -53,8 +50,6 @@ public class RequestActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // SETCONTENT
         setContentView(R.layout.activity_request);
 
         // init toolbar
@@ -164,6 +159,11 @@ public class RequestActivity extends AppCompatActivity {
                             // make request global
                             GlobalVars.getInstance().userRequest = result;
                         }
+
+                        @Override
+                        public void onFailure() {
+
+                        }
                     });
 
                     // add connections
@@ -198,6 +198,11 @@ public class RequestActivity extends AppCompatActivity {
                                         // back
                                         onBackPressed();
                                     }
+
+                                    @Override
+                                    public void onFailure() {
+
+                                    }
                                 });
 
                                 // get person connect
@@ -220,15 +225,30 @@ public class RequestActivity extends AppCompatActivity {
                                                     // make updated connection global
                                                     GlobalVars.getInstance().personConnect = result;
                                                 }
+
+                                                @Override
+                                                public void onFailure() {
+
+                                                }
                                             });
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
                                     }
+
+                                    @Override
+                                    public void onFailure() {
+
+                                    }
                                 });
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
+                        }
+
+                        @Override
+                        public void onFailure() {
+
                         }
                     });
                 } catch (JSONException e) {
@@ -269,6 +289,11 @@ public class RequestActivity extends AppCompatActivity {
                             // user and person updated show message
                             Toast.makeText(RequestActivity.this, "User Updated.", Toast.LENGTH_SHORT).show();
                             onBackPressed();
+                        }
+
+                        @Override
+                        public void onFailure() {
+
                         }
                     });
                 } catch (JSONException e) {
@@ -314,7 +339,7 @@ public class RequestActivity extends AppCompatActivity {
                     options = new DisplayImageOptions.Builder()
                             .displayer(new FadeInBitmapDisplayer(600))
                             .cacheInMemory(true)
-                            .cacheOnDisc(true)
+                            .cacheOnDisk(true)
                             .build();
                     imageLoader.displayImage(GlobalVars.getInstance().personDetail.getJSONArray("face").getJSONObject(position).getString("source"), pagerViews[position], options);
                 } catch (JSONException e) {

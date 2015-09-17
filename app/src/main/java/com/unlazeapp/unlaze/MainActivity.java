@@ -25,7 +25,6 @@ import com.unlazeapp.R;
 import com.unlazeapp.utils.ApiService;
 import com.unlazeapp.utils.ApiServiceListener;
 import com.unlazeapp.utils.GlobalVars;
-import com.unlazeapp.utils.PreferencesVars;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -62,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
             result = new DrawerBuilder()
                     .withActivity(this)
                     .withSliderBackgroundColorRes(R.color.u_blue)
-                    .withDisplayBelowStatusBar(true)
                     .withToolbar(toolbar)
                     .addDrawerItems(
                             new DividerDrawerItem(),
@@ -181,7 +179,70 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        // update user on the API -- on regular app start
+        // notification checks
+        if (GlobalVars.getInstance().U_NOTIF_STATE == 1) {
+
+            // person already loaded -- show request activity
+            Intent i = new Intent(this, RequestActivity.class);
+            startActivityForResult(i, 0);
+        } else if (GlobalVars.getInstance().U_NOTIF_STATE == 2) {
+
+            // person already loaded -- show chat activity
+            Intent i = new Intent(this, ChatActivity.class);
+            startActivityForResult(i, 0);
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+    }
+
+    protected void notificationRequest() {
+        Intent i = new Intent(MainActivity.this, RequestActivity.class);
+        startActivityForResult(i, 0);
+    }
+
+    protected void notificationChat() {
+        Intent i = new Intent(MainActivity.this, ChatActivity.class);
+        startActivityForResult(i, 0);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState = result.saveInstanceState(outState);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (result != null && result.isDrawerOpen()) {
+            result.closeDrawer();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // update user on the API -- on pause
         try {
             GlobalVars.getInstance().userDetail.put("gcm", GlobalVars.getInstance().gcm);
             JSONArray coordinates = new JSONArray();
@@ -201,55 +262,18 @@ public class MainActivity extends AppCompatActivity {
                     // user updated
                     Toast.makeText(getApplicationContext(), "User Updated.", Toast.LENGTH_LONG).show();
                 }
+
+                @Override
+                public void onFailure() {
+                    Toast.makeText(getApplicationContext(), "Failed to update User.", Toast.LENGTH_LONG).show();
+                }
             });
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        // notification checks
-        if (GlobalVars.getInstance().U_NOTIF_STATE == 1) {
-
-            // person already loaded -- show request activity
-            Intent i = new Intent(this, RequestActivity.class);
-            startActivityForResult(i, 0);
-        }
-    }
-
-    protected void notificationRequest() {
-        Intent i = new Intent(MainActivity.this, RequestActivity.class);
-        startActivityForResult(i, 0);
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        //add the values which need to be saved from the drawer to the bundle
-        outState = result.saveInstanceState(outState);
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onBackPressed() {
-        //handle the back press :D close the drawer first and if the drawer is closed close the activity
-        if (result != null && result.isDrawerOpen()) {
-            result.closeDrawer();
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
+        // save on state
+        GlobalVars.getInstance().U_APP_STATE = "main";
     }
 
     public static MainActivity getInstance() {

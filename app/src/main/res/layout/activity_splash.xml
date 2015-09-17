@@ -20,6 +20,6 @@
         android:textColor="@color/u_lgrey"
         android:gravity="center_horizontal"
         android:layout_alignParentBottom="true"
-        android:text="Unlaze" />
+        android:text="UNLAZE" />
 
 </RelativeLayout>

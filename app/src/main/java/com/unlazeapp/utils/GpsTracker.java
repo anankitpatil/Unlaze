@@ -1,12 +1,6 @@
 package com.unlazeapp.utils;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 import java.util.Locale;
 
@@ -30,18 +24,17 @@ public class GpsTracker extends Service implements LocationListener {
 
     private Context mContext;
 
-    // flag for GPS Status
-    boolean isGPSEnabled = false;
-    // flag for network status
-    boolean isNetworkEnabled = false;
-    boolean canGetLocation = false;
-    Location location;
+    public boolean isGPSEnabled = false;
+
+    public boolean isNetworkEnabled = false;
+
+    private Location location;
+
     public double latitude;
     public double longitude;
 
     // The minimum distance to change updates in metters
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 
-    // metters
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10
 
     // The minimum time beetwen updates in milliseconds
     private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minute
@@ -120,22 +113,6 @@ public class GpsTracker extends Service implements LocationListener {
         }
     }
 
-    public double getLatitude() {
-        if (location != null) {
-            latitude = location.getLatitude();
-        }
-
-        return latitude;
-    }
-
-    public double getLongitude() {
-        if (location != null) {
-            longitude = location.getLongitude();
-        }
-
-        return longitude;
-    }
-
     public String getCity() throws IOException {
         Geocoder geocoder = new Geocoder(mContext, Locale.getDefault());
         List<Address> addressList = geocoder.getFromLocation(
@@ -149,49 +126,28 @@ public class GpsTracker extends Service implements LocationListener {
             }
             city = address.getLocality();
         } else {
-            city = getLocationCityName(latitude, longitude);
-        }
+            ApiService call = ApiService.getInstance();
+            call.geoCall(latitude + "," + longitude, new ApiServiceListener() {
+                @Override
+                public void onSuccess(JSONObject result) {
+                    try {
+                        GlobalVars.getInstance().userDetail.put("city", getCityAddress(result));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
 
+                @Override
+                public void onFailure() {
+
+                }
+            });
+        }
         return city;
     }
 
-    public static String getLocationCityName( double lat, double lon ) throws MalformedURLException, IOException{
-        JSONObject result = getLocationFormGoogle(lat + "," + lon );
-        return getCityAddress(result);
-    }
-
-    protected static JSONObject getLocationFormGoogle(String placesName) {
-
-        HttpURLConnection urlConnection = null;
-        JSONObject jsonObject = new JSONObject();
-        try {
-            URL url = new URL("https://maps.googleapis.com/maps/api/geocode/json?latlng="+placesName+"&ka&sensor=false");
-            Log.v("Geo url", url.toString());
-            urlConnection = (HttpURLConnection) url.openConnection();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(new BufferedInputStream(urlConnection.getInputStream())));
-            String line;
-            StringBuilder result = new StringBuilder();
-            while ((line = reader.readLine()) != null) {
-                result.append(line);
-            }
-            reader.reset();
-            reader.close();
-
-            jsonObject = new JSONObject(result.toString());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (urlConnection != null) {
-                urlConnection.disconnect();
-            }
-            return jsonObject;
-        }
-    }
-
-    protected static String getCityAddress( JSONObject result ){
-        if( result.has("results") ){
+    protected static String getCityAddress (JSONObject result) {
+        if (result.has("results")) {
             try {
                 JSONArray array = result.getJSONArray("results");
                 if( array.length() > 0 ){
@@ -211,37 +167,27 @@ public class GpsTracker extends Service implements LocationListener {
                 e.printStackTrace();
             }
         }
-
         return null;
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     public void onProviderEnabled(String provider) {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     public void onProviderDisabled(String provider) {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-        // TODO Auto-generated method stub
         return null;
     }
 

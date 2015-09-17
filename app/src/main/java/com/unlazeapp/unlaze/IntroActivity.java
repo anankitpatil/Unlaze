@@ -10,12 +10,10 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.facebook.AccessToken;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
@@ -45,16 +43,22 @@ import java.util.List;
  * Created by AP on 15/07/15.
  */
 public class IntroActivity extends Activity {
+
     private ViewPager viewPager;
+
     private int[] introSlides = {
             R.drawable.instruction_a,
             R.drawable.instruction_b,
             R.drawable.instruction_c
     };
+
     private String TAG = "UNLAZE //";
+
     private CallbackManager callbackManager;
     private List<String> permissionNeeds= Arrays.asList("email", "user_birthday", "public_profile", "user_about_me", "user_actions.fitness", "user_location", "user_photos");
+
     ImageLoader imageLoader = ImageLoader.getInstance();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -151,6 +155,11 @@ public class IntroActivity extends Activity {
                                             startActivity(i);
                                             finish();
                                         }
+
+                                        @Override
+                                        public void onFailure() {
+
+                                        }
                                     });
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -201,7 +210,7 @@ public class IntroActivity extends Activity {
             options = new DisplayImageOptions.Builder()
                     .displayer(new FadeInBitmapDisplayer(600))
                     .cacheInMemory(true)
-                    .cacheOnDisc(true)
+                    .cacheOnDisk(true)
                     .build();
             imageLoader.displayImage("drawable://" + introSlides[position], imageView, options);
 

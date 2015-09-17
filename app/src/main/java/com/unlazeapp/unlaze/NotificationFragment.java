@@ -1,8 +1,6 @@
 package com.unlazeapp.unlaze;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -31,7 +29,6 @@ import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -87,7 +84,7 @@ public class NotificationFragment extends Fragment implements SwipeRefreshLayout
                     GlobalVars.getInstance().userRequest = result;
 
                     if (GlobalVars.getInstance().userRequest.length() > 0) {
-                        for (int k = GlobalVars.getInstance().userRequest.length(); k > 0; k--) {
+                        for (int k = GlobalVars.getInstance().userRequest.length(); k >= 0; k--) {
                             try {
                                 if (GlobalVars.getInstance().userRequest.getJSONObject(k).getBoolean("valid")) {
                                     ApiService call = ApiService.getInstance();
@@ -154,6 +151,11 @@ public class NotificationFragment extends Fragment implements SwipeRefreshLayout
                                             });
                                             tl.addView(row);
                                         }
+
+                                        @Override
+                                        public void onFailure() {
+
+                                        }
                                     });
                                 }
                             } catch (JSONException e) {
@@ -165,6 +167,11 @@ public class NotificationFragment extends Fragment implements SwipeRefreshLayout
                         // show no notifications message
                     }
                     swipeLayout.setRefreshing(false);
+                }
+
+                @Override
+                public void onFailure() {
+
                 }
             });
         } catch (JSONException e) {

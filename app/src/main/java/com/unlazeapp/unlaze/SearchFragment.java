@@ -1,17 +1,14 @@
 package com.unlazeapp.unlaze;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -166,6 +163,11 @@ public class SearchFragment extends Fragment implements SwipeRefreshLayout.OnRef
                         e.printStackTrace();
                     }
                 }
+
+                @Override
+                public void onFailure() {
+
+                }
             });
         } catch (JSONException e) {
             e.printStackTrace();
@@ -196,10 +198,10 @@ public class SearchFragment extends Fragment implements SwipeRefreshLayout.OnRef
                         for (int i = 0; i < result.getJSONArray(0).length(); i++) {
 
                             // remove self
-                            // if (result.getJSONArray(0).getJSONObject(i).getString("id").equals(GlobalVars.getInstance().userDetail.getString("id"))) continue;
+                            if (result.getJSONArray(0).getJSONObject(i).getString("id").equals(GlobalVars.getInstance().userDetail.getString("id"))) continue;
 
                             // check if request exists with user
-                            /*Boolean requestExists = false;
+                            Boolean requestExists = false;
                             if (result.getJSONArray(1).getJSONArray(i).length() > 0) {
                                 for (int j = 0; j < result.getJSONArray(1).getJSONArray(i).length(); j++) {
                                     if (result.getJSONArray(1).getJSONArray(i).getJSONObject(j).getString("_with").equals(GlobalVars.getInstance().userDetail.getString("id"))) {
@@ -213,7 +215,7 @@ public class SearchFragment extends Fragment implements SwipeRefreshLayout.OnRef
                                     }
                                 }
                             }
-                            if (requestExists) continue;*/
+                            if (requestExists) continue;
 
                             // Create search results view
                             LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -308,6 +310,11 @@ public class SearchFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
                 // remove refresh
                 swipeLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void onFailure() {
+
             }
         });
     }

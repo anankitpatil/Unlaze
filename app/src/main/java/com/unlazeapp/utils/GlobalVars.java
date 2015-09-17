@@ -13,10 +13,12 @@ public class GlobalVars {
     public JSONArray userActivity;
     public JSONArray userConnect;
     public JSONArray userRequest;
+    public JSONArray userChat;
     public JSONObject personDetail;
     public JSONArray personActivity;
     public JSONArray personConnect;
     public JSONArray personRequest;
+    public JSONArray personChat;
     public String activityList[] = new String[10];
     public int activityIcons[] = new int[10];
     public int activityRIcons[] = new int[10];
@@ -25,6 +27,7 @@ public class GlobalVars {
     public String city;
     public String gcm;
     public int U_NOTIF_STATE = 0;
+    public String U_APP_STATE = null;
 
     protected GlobalVars() {
 

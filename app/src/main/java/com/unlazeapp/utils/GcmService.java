@@ -5,7 +5,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,19 +17,17 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.unlazeapp.R;
+import com.unlazeapp.unlaze.ChatActivity;
 import com.unlazeapp.unlaze.SplashActivity;
+
+import org.json.JSONException;
 
 public class GcmService extends IntentService {
 
     public static int NOTIFICATION_ID = 1;
     private NotificationManager mNotificationManager;
 
-    static final String TAG = "Unlaze";
-
-    private SharedPreferences shared;
-    static final String PREF = "unlazePreferences";
-
-    private String content;
+    static final String TAG = "UNLAZE";
 
     ImageLoader imageLoader = ImageLoader.getInstance();
 
@@ -46,37 +43,81 @@ public class GcmService extends IntentService {
         if (!extras.isEmpty()) {
             if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
                 Log.i(TAG, "GCM // Send error");
-                sendNotification(null, "Message send error", null);
+                createNotification(null, "Message send error", null);
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(messageType)) {
-                sendNotification(null, "Message Deleted", null);
+                createNotification(null, "Message Deleted", null);
                 Log.i(TAG, "GCM // Deleted message");
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
 
-                // Init notif content
+                // load image
                 if(!imageLoader.isInited()) ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(getApplicationContext()));
-                DisplayImageOptions options = new DisplayImageOptions.Builder().cacheOnDisc()
+                DisplayImageOptions options = new DisplayImageOptions.Builder().cacheOnDisk(true).cacheInMemory(true)
                         .imageScaleType(ImageScaleType.NONE)
                         .handler(new Handler())
                         .build();
                 final Bitmap bmp = imageLoader.loadImageSync("https://graph.facebook.com/" + extras.getString("user") + "/picture?width=150&height=150", options);
-                content = "You have an new request from " + extras.getString("name") + " to join in for some " + extras.getString("activity") + ".";
-                sendNotification(bmp, content, extras.getString("user"));
-                Log.i(TAG, "GCM Sent to notification //" + extras.toString());
+                if (null != GlobalVars.getInstance().U_APP_STATE) {
+                    if (extras.getString("form").equals("notification")) {
+
+                        // app open -- create request notification anyway
+                        final String content = "You have an new request from " + extras.getString("name") + " to join in for some " + extras.getString("activity") + ".";
+                        createNotification(bmp, content, extras.getString("user"));
+                        Log.i(TAG, "new REQUEST notif" + extras.toString());
+                    } else if (extras.getString("form").equals("conversation")) {
+                        if (GlobalVars.getInstance().U_APP_STATE == "main") {
+
+                            // app in main -- create notification
+                            createChatNotification(bmp, extras.getString("name"), extras.getString("message"), extras.getString("user"));
+                            Log.i(TAG, "new CHAT notif" + extras.toString());
+                        } else if (GlobalVars.getInstance().U_APP_STATE == "chat") {
+                            try {
+                                if (GlobalVars.getInstance().personDetail.getString("id").equals(extras.getString("user"))) {
+
+                                    // app in chat with same person -- send chat message
+                                    Intent chatIntent = new Intent(getBaseContext(), ChatActivity.class);
+                                    chatIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                                    chatIntent.putExtra("message", extras.getString("message"));
+                                    getApplication().startActivity(chatIntent);
+                                } else {
+
+                                    // different person -- create notification
+                                    createChatNotification(bmp, extras.getString("name"), extras.getString("message"), extras.getString("user"));
+                                    Log.i(TAG, "new CHAT notif" + extras.toString());
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                } else {
+
+                    // app not active
+                    if (extras.getString("form").equals("notification")) {
+
+                        // new request notification
+                        final String content = "You have an new request from " + extras.getString("name") + " to join in for some " + extras.getString("activity") + ".";
+                        createNotification(bmp, content, extras.getString("user"));
+                        Log.i(TAG, "new REQUEST notif" + extras.toString());
+                    } else if (extras.getString("form").equals("conversation")) {
+
+                        // new message notification
+                        createChatNotification(bmp, extras.getString("name"), extras.getString("message"), extras.getString("user"));
+                        Log.i(TAG, "new CHAT notif" + extras.toString());
+                    }
+                }
             }
         }
-        // Release the wake lock provided by the WakefulBroadcastReceiver.
         GcmReceiver.completeWakefulIntent(intent);
     }
 
-    private void sendNotification(Bitmap bmp, String msg, String id) {
+    private void createNotification(Bitmap bmp, String msg, String id) {
         mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.unlaze_notification)
                 .setLargeIcon(bmp)
-                .setContentTitle("New unlaze request!")
-                .setStyle(new NotificationCompat.BigTextStyle().bigText(msg))
+                .setContentTitle("New UNLAZE request!")
+                .setContentText(msg)
                 .setAutoCancel(true);
-
         final Intent intent = new Intent(getApplicationContext(), SplashActivity.class);
         intent.putExtra("mode", "request");
         intent.putExtra("person", id);
@@ -84,7 +125,24 @@ public class GcmService extends IntentService {
         // start new application
         PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         mBuilder.setContentIntent(pi);
+        mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+    }
 
+    private  void createChatNotification(Bitmap bmp, String title, String msg, String id) {
+        mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.unlaze_notification)
+                .setLargeIcon(bmp)
+                .setContentTitle(title)
+                .setContentText(msg)
+                .setAutoCancel(true);
+        final Intent intent = new Intent(getApplicationContext(), SplashActivity.class);
+        intent.putExtra("mode", "chat");
+        intent.putExtra("person", id);
+
+        // start new application
+        PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        mBuilder.setContentIntent(pi);
         mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
     }
 
