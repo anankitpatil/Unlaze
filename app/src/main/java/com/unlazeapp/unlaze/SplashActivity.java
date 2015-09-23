@@ -1,6 +1,5 @@
 package com.unlazeapp.unlaze;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -33,7 +33,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-public class SplashActivity extends Activity {
+public class SplashActivity extends AppCompatActivity {
 
     public static final String PROPERTY_REG_ID = "registration_id";
     private static final String PROPERTY_APP_VERSION = "appVersion";
@@ -103,38 +103,6 @@ public class SplashActivity extends Activity {
             }
         }
 
-        // check if GPS enabled sync location
-        GpsTracker gpsTracker = new GpsTracker(this);
-        double lon = gpsTracker.longitude;
-        double lat = gpsTracker.latitude;
-        GlobalVars.getInstance().longitude = lon;
-        GlobalVars.getInstance().latitude = lat;
-        try {
-            GlobalVars.getInstance().city = gpsTracker.getCity();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // alert for gps
-        if (!gpsTracker.isGPSEnabled || !gpsTracker.isGPSEnabled) {
-            AlertDialog.Builder dialog = new AlertDialog.Builder(getApplicationContext());
-            dialog.setMessage("UNLAZE requires your location to find an activity for you. Enable location services from settings.");
-            dialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                    Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    getApplicationContext().startActivity(myIntent);
-                }
-            });
-            dialog.setNegativeButton("Exit", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                    finish();
-                }
-            });
-            dialog.show();
-        }
-
         // check for GCM or register
         if (checkPlayServices()) {
             gcm = GoogleCloudMessaging.getInstance(this);
@@ -167,41 +135,72 @@ public class SplashActivity extends Activity {
                 call.getDetail(AccessToken.getCurrentAccessToken().getUserId(), new ApiServiceListener() {
                     @Override
                     public void onSuccess(JSONObject result) {
-                        if (result.toString().equals("{}")) {
 
-                            // no users exist or error
-                            Intent i = new Intent(SplashActivity.this, IntroActivity.class);
-                            startActivity(i);
-                            finish();
+                        // check if GPS enabled sync location
+                        GpsTracker gpsTracker = new GpsTracker(SplashActivity.this);
+                        double lon = gpsTracker.longitude;
+                        double lat = gpsTracker.latitude;
+                        GlobalVars.getInstance().longitude = lon;
+                        GlobalVars.getInstance().latitude = lat;
+                        GlobalVars.getInstance().city = gpsTracker.getCity();
+
+                        // alert for gps
+                        if (gpsTracker.isGPSEnabled && gpsTracker.isGPSEnabled) {
+                            if (result.toString().equals("{}")) {
+
+                                // no users exist or error
+                                Intent i = new Intent(SplashActivity.this, IntroActivity.class);
+                                startActivity(i);
+                                finish();
+                            } else {
+
+                                // user exists -- make detail global
+                                GlobalVars.getInstance().userDetail = result;
+
+                                // normal start
+                                Intent i = new Intent(SplashActivity.this, MainActivity.class);
+                                startActivity(i);
+                                finish();
+                            }
                         } else {
-
-                            // user exists -- make detail global
-                            GlobalVars.getInstance().userDetail = result;
-
-                            // normal start
-                            Intent i = new Intent(SplashActivity.this, MainActivity.class);
-                            startActivity(i);
-                            finish();
+                            AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                            builder.setTitle("UNLAZE");
+                            builder.setMessage("We require your location to find an activity for you. Enable fine location services from settings.");
+                            builder.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    final Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                    getApplicationContext().startActivity(i);
+                                }
+                            });
+                            builder.setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    finish();
+                                }
+                            });
+                            builder.show();
                         }
                     }
                     @Override
                     public void onFailure() {
-                        AlertDialog.Builder dialog = new AlertDialog.Builder(getApplicationContext());
-                        dialog.setMessage("UNLAZE requires internet to find an people to share an activity with you. Enable internet from settings.");
-                        dialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                        builder.setTitle("UNLAZE");
+                        builder.setMessage("We need an active internet connection to connect to our servers. Enable WiFi from settings.");
+                        builder.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                                Intent myIntent = new Intent(Settings.ACTION_WIFI_SETTINGS);
-                                getApplicationContext().startActivity(myIntent);
+                            public void onClick(DialogInterface dialog, int which) {
+                                final Intent i = new Intent(Settings.ACTION_WIFI_SETTINGS);
+                                getApplicationContext().startActivity(i);
                             }
                         });
-                        dialog.setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+                        builder.setNegativeButton("Exit", new DialogInterface.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                            public void onClick(DialogInterface dialog, int which) {
                                 finish();
                             }
                         });
-                        dialog.show();
+                        builder.show();
                     }
                 });
             }

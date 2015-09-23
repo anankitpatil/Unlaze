@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -84,7 +83,7 @@ public class NotificationFragment extends Fragment implements SwipeRefreshLayout
                     GlobalVars.getInstance().userRequest = result;
 
                     if (GlobalVars.getInstance().userRequest.length() > 0) {
-                        for (int k = GlobalVars.getInstance().userRequest.length(); k >= 0; k--) {
+                        for (int k = GlobalVars.getInstance().userRequest.length() - 1; k >= 0; k--) {
                             try {
                                 if (GlobalVars.getInstance().userRequest.getJSONObject(k).getBoolean("valid")) {
                                     ApiService call = ApiService.getInstance();
@@ -106,7 +105,7 @@ public class NotificationFragment extends Fragment implements SwipeRefreshLayout
                                                 options = new DisplayImageOptions.Builder()
                                                         .displayer(new FadeInBitmapDisplayer(600))
                                                         .cacheInMemory(true)
-                                                        .cacheOnDisc(true)
+                                                        .cacheOnDisk(true)
                                                         .build();
                                                 imageLoader.displayImage("https://graph.facebook.com/" + GlobalVars.getInstance().userRequest.getJSONObject(_k).getString("_with") + "/picture?type=normal", face, options);
                                                 line.setText(GlobalVars.getInstance().userRequest.getJSONObject(_k).getString("name") + " has pinged you!");
@@ -136,17 +135,6 @@ public class NotificationFragment extends Fragment implements SwipeRefreshLayout
                                                     // person loaded -- show request activity
                                                     Intent i = new Intent(getActivity(), RequestActivity.class);
                                                     startActivityForResult(i, 0);
-                                                }
-                                            });
-                                            row.setOnTouchListener(new View.OnTouchListener() {
-                                                @Override
-                                                public boolean onTouch(View v, MotionEvent event) {
-                                                    if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
-                                                        v.setBackgroundColor(getResources().getColor(R.color.u_lgrey));
-                                                    } else if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
-                                                        v.setBackgroundColor(0);
-                                                    }
-                                                    return false;
                                                 }
                                             });
                                             tl.addView(row);

@@ -6,17 +6,17 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.gc.materialdesign.views.CheckBox;
-import com.gc.materialdesign.views.Slider;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
@@ -92,38 +92,34 @@ public class SearchFragment extends Fragment implements SwipeRefreshLayout.OnRef
                             }
 
                             // male female listeners
-                            male.setOncheckListener(new CheckBox.OnCheckListener() {
+                            male.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                                 @Override
-                                public void onCheck(CheckBox checkBox, boolean b) {
+                                public void onCheckedChanged(CompoundButton buttonView, boolean b) {
                                     try {
-                                        if (b && female.isCheck()) {
+                                        if (b && female.isChecked()) {
                                             GlobalVars.getInstance().userDetail.put("selected_gender", 0);
-                                        }
-                                        else if (!b && female.isCheck()) {
+                                        } else if (!b && female.isChecked()) {
                                             GlobalVars.getInstance().userDetail.put("selected_gender", 2);
-                                        }
-                                        else if (!b && !female.isCheck()) {
+                                        } else if (!b && !female.isChecked()) {
                                             Toast.makeText(getActivity(), "You must select at least one.", Toast.LENGTH_LONG).show();
-                                            checkBox.setChecked(true);
+                                            buttonView.setChecked(true);
                                         }
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
                                 }
                             });
-                            female.setOncheckListener(new CheckBox.OnCheckListener() {
+                            female.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                                 @Override
-                                public void onCheck(CheckBox checkBox, boolean b) {
+                                public void onCheckedChanged(CompoundButton buttonView, boolean b) {
                                     try {
-                                        if (b && male.isCheck()) {
+                                        if (b && male.isChecked()) {
                                             GlobalVars.getInstance().userDetail.put("selected_gender", 0);
-                                        }
-                                        else if (!b && male.isCheck()) {
+                                        } else if (!b && male.isChecked()) {
                                             GlobalVars.getInstance().userDetail.put("selected_gender", 1);
-                                        }
-                                        else if (!b && !male.isCheck()) {
+                                        } else if (!b && !male.isChecked()) {
                                             Toast.makeText(getActivity(), "You must select at least one.", Toast.LENGTH_LONG).show();
-                                            checkBox.setChecked(true);
+                                            buttonView.setChecked(true);
                                         }
                                     } catch (JSONException e) {
                                         e.printStackTrace();
@@ -132,19 +128,29 @@ public class SearchFragment extends Fragment implements SwipeRefreshLayout.OnRef
                             });
 
                             // Set radius slider
-                            Slider slider = (Slider) v.findViewById(R.id.slider);
-                            slider.setValue(GlobalVars.getInstance().userDetail.getInt("selected_radius") / 1000);
+                            SeekBar slider = (SeekBar) v.findViewById(R.id.slider);
+                            slider.setProgress(GlobalVars.getInstance().userDetail.getInt("selected_radius") / 1000);
                             final TextView radiusValue = (TextView) v.findViewById(R.id.sliderValue);
                             radiusValue.setText(roundOff(GlobalVars.getInstance().userDetail.getInt("selected_radius") / 1000) + " km");
-                            slider.setOnValueChangedListener(new Slider.OnValueChangedListener() {
+                            slider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                                 @Override
-                                public void onValueChanged(int i) {
+                                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                                     try {
-                                        GlobalVars.getInstance().userDetail.put("selected_radius", i * 1000);
+                                        GlobalVars.getInstance().userDetail.put("selected_radius", progress * 1000);
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
-                                    radiusValue.setText(roundOff(i) + " km");
+                                    radiusValue.setText(roundOff(progress) + " km");
+                                }
+
+                                @Override
+                                public void onStartTrackingTouch(SeekBar seekBar) {
+
+                                }
+
+                                @Override
+                                public void onStopTrackingTouch(SeekBar seekBar) {
+
                                 }
                             });
 
@@ -257,7 +263,7 @@ public class SearchFragment extends Fragment implements SwipeRefreshLayout.OnRef
                             // Get selected activity icon
                             for (int j = 0; j < GlobalVars.getInstance().activityList.length; j++) {
                                 if (GlobalVars.getInstance().activityList[j].equals(GlobalVars.getInstance().selectedActivity)) {
-                                    icon.setImageResource(GlobalVars.getInstance().activityRIcons[j]);
+                                    icon.setImageResource(GlobalVars.getInstance().activityIcons[j]);
                                 }
                             }
 
@@ -266,7 +272,7 @@ public class SearchFragment extends Fragment implements SwipeRefreshLayout.OnRef
                             options = new DisplayImageOptions.Builder()
                                     .displayer(new FadeInBitmapDisplayer(600))
                                     .cacheInMemory(true)
-                                    .cacheOnDisc(true)
+                                    .cacheOnDisk(true)
                                     .build();
                             imageLoader.displayImage("https://graph.facebook.com/" + result.getJSONArray(0).getJSONObject(i).getString("id") + "/picture?type=normal", face, options);
 
@@ -286,17 +292,6 @@ public class SearchFragment extends Fragment implements SwipeRefreshLayout.OnRef
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
-                                }
-                            });
-                            row.setOnTouchListener(new View.OnTouchListener() {
-                                @Override
-                                public boolean onTouch(View v, MotionEvent event) {
-                                    if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
-                                        v.setBackgroundColor(getResources().getColor(R.color.u_lgrey));
-                                    } else if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
-                                        v.setBackgroundColor(0);
-                                    }
-                                    return false;
                                 }
                             });
                             tl.addView(row);

@@ -167,33 +167,6 @@ public class ChatActivity extends AppCompatActivity {
         // chat sender
         button = (Button) findViewById(R.id.enter);
         write = (EditText) findViewById(R.id.write);
-        /* enter sends message -- disabled
-        write.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged (CharSequence s,int start, int before, int count){
-                if (s.length() >= 1) {
-                    if (s.charAt(s.length() - 1) == '\n') {
-
-                        // when enter pressed
-                        final JSONObject message = new JSONObject();
-                        try {
-                            message.put("text", write.getText().toString().substring(0, write.getText().toString().length() - 1));
-                            sendMessage(message);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        write.setText("");
-                        write.requestFocus();
-                    }
-                }
-            }
-            @Override
-            public void beforeTextChanged (CharSequence s,int start, int count, int after){
-            }
-            @Override
-            public void afterTextChanged (Editable s){
-            }
-        });*/
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

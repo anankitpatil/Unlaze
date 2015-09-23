@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -188,17 +187,6 @@ public class ConnectionFragment extends Fragment implements SwipeRefreshLayout.O
                                                     // Start personView
                                                     Intent i = new Intent(getActivity(), ChatActivity.class);
                                                     startActivityForResult(i, 0);
-                                                }
-                                            });
-                                            row.setOnTouchListener(new View.OnTouchListener() {
-                                                @Override
-                                                public boolean onTouch(View v, MotionEvent event) {
-                                                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                                                        v.setBackgroundColor(getResources().getColor(R.color.u_lgrey));
-                                                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                                                        v.setBackgroundColor(0);
-                                                    }
-                                                    return false;
                                                 }
                                             });
                                             tl.addView(row);

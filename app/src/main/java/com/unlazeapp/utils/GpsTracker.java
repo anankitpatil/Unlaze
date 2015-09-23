@@ -113,19 +113,38 @@ public class GpsTracker extends Service implements LocationListener {
         }
     }
 
-    public String getCity() throws IOException {
+    public String getCity() {
         Geocoder geocoder = new Geocoder(mContext, Locale.getDefault());
-        List<Address> addressList = geocoder.getFromLocation(
-                latitude, longitude, 1);
+        List<Address> addressList;
         String city = null;
-        if (addressList != null && addressList.size() > 0) {
-            Address address = addressList.get(0);
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < address.getMaxAddressLineIndex(); i++) {
-                sb.append(address.getAddressLine(i)).append("\n");
+        try {
+            addressList = geocoder.getFromLocation(latitude, longitude, 1);
+            if (addressList != null && addressList.size() > 0) {
+                Address address = addressList.get(0);
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < address.getMaxAddressLineIndex(); i++) {
+                    sb.append(address.getAddressLine(i)).append("\n");
+                }
+                city = address.getLocality();
+            } else {
+                ApiService call = ApiService.getInstance();
+                call.geoCall(latitude + "," + longitude, new ApiServiceListener() {
+                    @Override
+                    public void onSuccess(JSONObject result) {
+                        try {
+                            GlobalVars.getInstance().userDetail.put("city", getCityAddress(result));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    @Override
+                    public void onFailure() {
+
+                    }
+                });
             }
-            city = address.getLocality();
-        } else {
+        } catch (IOException e) {
+            e.printStackTrace();
             ApiService call = ApiService.getInstance();
             call.geoCall(latitude + "," + longitude, new ApiServiceListener() {
                 @Override
@@ -136,7 +155,6 @@ public class GpsTracker extends Service implements LocationListener {
                         e.printStackTrace();
                     }
                 }
-
                 @Override
                 public void onFailure() {
 

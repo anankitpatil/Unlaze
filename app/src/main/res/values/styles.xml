@@ -7,6 +7,16 @@
 
         <item name="colorPrimary">@color/u_blue</item>
         <item name="colorPrimaryDark">@color/u_dblue</item>
+
+        <item name="alertDialogTheme">@style/dialog</item>
+        <item name="colorAccent">@color/u_blue</item>
+    </style>
+
+    <!-- Base alert dialog theme. -->
+    <style name="dialog" parent="Base.Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/u_blue</item>
+        <item name="android:textColorPrimary">@color/u_grey</item>
+        <item name="android:background">@color/u_white</item>
     </style>
 
 </resources>

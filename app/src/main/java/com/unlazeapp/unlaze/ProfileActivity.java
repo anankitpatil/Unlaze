@@ -8,6 +8,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +45,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Created by AP on 15/07/15.
@@ -188,6 +191,12 @@ public class ProfileActivity extends AppCompatActivity {
                                 try {
                                     if (GlobalVars.getInstance().userActivity.length() > 0) {
 
+                                        // get now time
+                                        final String FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS";
+                                        SimpleDateFormat sf = new SimpleDateFormat(FORMAT, Locale.ENGLISH);
+                                        sf.setTimeZone(TimeZone.getTimeZone("gmt"));
+                                        final String now = sf.format(new Date());
+
                                         // if activities exist
                                         Boolean createNew = true;
                                         for (int j = 0; j < GlobalVars.getInstance().userActivity.length(); j++) {
@@ -201,7 +210,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                                                     // activate activity
                                                     GlobalVars.getInstance().userActivity.getJSONObject(j).put("valid", true);
-                                                    GlobalVars.getInstance().userActivity.getJSONObject(j).put("last", new Date());
+                                                    GlobalVars.getInstance().userActivity.getJSONObject(j).put("last", now);
 
                                                     // selected alert
                                                     Toast.makeText(getApplicationContext(), GlobalVars.getInstance().activityList[_i] + " selected.", Toast.LENGTH_LONG).show();
@@ -216,7 +225,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                                                     // deactivate activity
                                                     GlobalVars.getInstance().userActivity.getJSONObject(j).put("valid", false);
-                                                    GlobalVars.getInstance().userActivity.getJSONObject(j).put("last", new Date());
+                                                    GlobalVars.getInstance().userActivity.getJSONObject(j).put("last", now);
                                                 }
                                             }
                                         }
@@ -294,6 +303,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                         }
                     });
+                    Log.v("UNLAZE//", GlobalVars.getInstance().userActivity.toString());
                     call.updateActivity(GlobalVars.getInstance().userDetail.getString("id"), GlobalVars.getInstance().userActivity, new ApiServiceListenerP() {
                         @Override
                         public void onSuccess(JSONArray result) {

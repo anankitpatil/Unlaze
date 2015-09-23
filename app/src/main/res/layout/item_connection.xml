@@ -4,7 +4,8 @@
     android:layout_height="wrap_content"
     android:paddingLeft="6sp"
     android:paddingRight="6sp"
-    android:paddingTop="6sp" >
+    android:paddingTop="6sp"
+    android:background="?attr/selectableItemBackground" >
 
     <RelativeLayout
         android:layout_width="fill_parent"
